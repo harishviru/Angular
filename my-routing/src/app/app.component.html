@@ -1,0 +1,17 @@
+ 
+<h2 [title]="title">Routing and Navigation  <small>[path,redirectTo,pathMatch,defaultRoute,Wildcard Route]</small></h2>
+ 
+<hr/>
+     <nav>
+    <!--<a [routerLink]="['departments']" [routerLinkActive]="['active']">Departments</a>  Another syntax-->
+        <a routerLink="/departments" routerLinkActive="active">Departments</a>
+        <a routerLink="/employees"  routerLinkActive="active">Employees</a>
+     </nav>
+    
+     
+<hr/>     
+<h2>Route Paramters/Optional Parameters/Relative Navigation  <small>[/ActivatedRoute/ParamMap/Router]</small></h2>
+
+
+<router-outlet></router-outlet> <!--Router view goes here [Whatever router configured result comes here]-->
+ 

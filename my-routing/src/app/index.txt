@@ -1,0 +1,135 @@
+                        Routing And Navigation
+                        ======================
+.The Router module handles the navigation & Routing in Angular. 
+.The Routing allows you to move from one part of the application to another part or one View to another View.  
+
+
+
+#Thinks to check Beforing going to Routing and Navigation
+
+-->Import AppRoutingModule in AppModule Module and add it to imports []
+-->Check <base href="/"> in index.html as sub tag of head element
+--><router-outlet></router-outlet> must be placed in app.component.html becoz Routers goes to here.
+ 
+#Routing App :
+-->1.Generate a project with routing option
+-->2.Generate departmentList and employeeList components
+-->3.Configure the routes
+-->4.Add buttons/Links and use directives to navigate
+
+3.
+  const routes: Routes = [
+    {path:'departments'  ,component:DepartmentListComponent},
+    {path:'employees'    ,component:EmployeeListComponent}
+];
+
+4. 
+     <nav>
+    <!--<a [routerLink]="['departments']" [routerLinkActive]="['active']">Departments</a>  Another syntax-->
+        <a [routerLink]="['departments']" routerLinkActive="active">Departments</a>
+        <a routerLink="/employees"  routerLinkActive="active">Employees</a>
+     </nav>
+
+
+ #Wlidcard route and redirecting routes
+ ======================================
+
+-->It must be last ,becoz it match every route if you place other than last 
+--> {path:"**"           ,component:PageNotFoundComponent}
+
+  :Default Route
+-->{path:'',component:DepartmentListComponent} ,//default Route
+
+    :Redirect
+-->{path:'',redirectTo:'/departments',pathMatch:'full'}
+if pathMatch :'prefix' ,it match every path becoz ,we are given empty string in path.
+              'full'   ,it match exact match of empty string becoz we are given empty string in path.
+
+ Testcases : prefix ,path:'one'  [{path:'one',redirectTo:'/departments',pathMatch:'prefix'}]
+            http://localhost:4200/one/<anything>
+
+
+    
+ #Route Parameters
+ =================
+
+ -->Route parameters [Here we are using placeholder like :id]
+ -->{path:'departments/:id',component:DepartmentDetailsComponent}
+
+ #Main [DepartmentListComponent]
+ import {Router} from '@angular/router'
+
+ constructor(private _route:Router) { }
+  
+  onDepartSelect(department:any){
+     this._route.navigate(['/departments',department.id]);    
+  }
+
+#Child [DepartmentDetailsComponent]
+
+
+public departmentId :any;
+import {ActivatedRoute} from '@angular/router'
+
+constructor(private activateRoute:ActivatedRoute) { }
+
+ ngOnInit() {
+    let id =this.activateRoute.snapshot.paramMap.get('id');
+    this.departmentId=id;
+  }
+
+
+#paramMap Observable
+====================
+
+-->paramMap is able call with update data when we go same component again.
+-->It is good instead of snapshot
+
+ngOnInit() {  
+    // let id =this.activateRoute.snapshot.paramMap.get('id');
+    // this.departmentId=id;
+    this.activateRoute.paramMap.subscribe( (params:ParamMap)=>{
+          let id=params.get('id');
+          this.departmentId=id;
+       })
+  }
+
+#Optional Route Parameters
+==========================
+
+ goToDepartment(){
+    let selectedId =this.departmentId;
+   this.router.navigate(['/departments',{id:selectedId}]); //Here Object {id:selectedId} is Optional Route parameters
+  }
+
+#Relative Navigation 
+=====================
+
+---> this._route.navigate(['/departments',department.id]);  //Absoulte Path 
+--->this._route.navigate([department.id],{relativeTo:this.activateRoute})      //Relative path
+
+Here activateRoute is ActivatedRoute and _route is Router
+
+#Child Routes
+=============
+-->Route inside  a route.
+
+{
+      path:'departments/:id'  ,
+      component:DepartmentDetailsComponent,
+      children:[
+             {path:'overview',component:DepartmentOverviewComponent},
+             {path:'contact',component:DepartmentContactComponent}
+      ]
+}
+
+In DepartmentDetailsComponent :
+ <hr/>
+      <h2> child routes [ Department details having child route]</h2>
+      <button (click)="showOverview()">Overview</button>
+      <button (click)="showContact()">Contact</button>
+      <router-outlet></router-outlet>
+
+
+
+
