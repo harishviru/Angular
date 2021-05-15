@@ -1,0 +1,387 @@
+
+#To create new project
+-->ng new <app-name>
+
+# To run application
+-->my-app>ng serve
+
+Note : Every Angular application has atleast one module,known as Root-Module
+      [By convention this is called as 'App-Module']
+
+ #Commands 
+ -->To create module
+ -->ng generate module xyz
+
+ -->To create component
+ -->ng generate component xyz
+ -->ng g c test -it -is -skipTests=true  //For Inline template,inline style 
+
+ -->To create services
+ -->ng generate service xyz
+
+ --->To run production build 
+ --->ng build --prod
+
+ --->To add angular material     
+ --->ng add @angular/material    [ng add _____]
+
+ -->To run test file
+ -->ng test
+
+ ====#01. Way of specifying selector in Template===========================
+
+// we can specifices component selector in app.component.html like these   
+ #01.  'app-student' ===> <app-student></app-student> ,
+ #02.  '.app-student' === <div class="app-student"></div>, 
+ #03.  '[app-student]'  === <div app-student></div>
+
+
+======Data binding   {{}} ,[] ,(),[()]====================================
+The data binding in Angular can be broadly classified into two groups. 
+                   i. One way binding 
+                  ii. two-way binding
+
+#One way binding 
+ i . From component to view 
+      a)Interpolation  {{}}
+      b)Property Binding []
+      c)Class/Style binding   [className],[class.<className>]/ [style.background-color]="expression" 
+      d)Attribute binding   [attr.attribute-you-are-targeting]="expression"
+ ii . From view to component
+      a) Event Binding  ()
+
+ #Two way binding  
+      a)ngModal   [(ngModel)]    
+
+ [=======(i). One way binding=================] 
+
+  ====#02.Interpolation {{}}===========================
+  -->By Using {{}} we can use the property value of its corresponding class
+  -->String Interpolation is One way data binding
+  -->syntax :{{propertyName}}
+  -->The Interpolation is Way of data binding from class/component to Template/html
+
+
+It means that you cannot make use of the following
+
+    Assignments (=, +=, -=, …)
+    Keywords like new, typeof, instanceof, etc
+    Chaining expressions with ; or ,
+    The increment and decrement operators ++ and --
+    bitwise operators such as | and &
+  -->we cannot able to assign in interpolation  {{x=7}}
+  --> we cannot able to get global javascript object {{window.location.href}}
+
+
+  ====#03.Property binding []===========================
+  -->Syntax :[]   //[binding-target]=”binding-source”
+       eg :  <input type="text" name="name" [id]="courseId" value="{{ngValue}}"  [disabled]="isDisabled"/>
+
+  --> Attribute vs Property
+
+ --> Attributes and properties are not the same
+ --> Attributes are defined by HTML
+ --> Properties are defined by DOM
+ --> Attributes Initialize DOM properties and they are done
+ --> Attributes values cannot change once they are Initialized
+ --> Property values however can change
+
+
+ ====#04. Class binding []===========================
+
+-->The Angular provides the three ways to add/remove classes to and from the element
+    i)HTML Class attribute 
+    ii)Using the DOM ClassName Property
+    iii)Class binding with Class
+    iv)using the NgClass directive
+
+ 
+#i :) HTML Class attribute 
+    <div class="red">red</div>
+
+#ii :)Using the DOM ClassName Property
+    <div [className]="'red'">Test</div>
+
+    .red{ color:red}
+    .fontSize{font-size:20px;}
+
+  <div [className]="'red fontSize'">Test</div>
+
+  $ : Another way of binding class like below
+     syntax :   bind-className
+     <div bind-className="'red fontSize'">Test</div>
+
+Note : If mixing both class and [className] results in removal of class attribute. You cannot use both.It take priority  [ClassName]
+
+  $ :Conditionally apply Classes 
+
+    cssStringVar: string= 'red fontSze';
+
+    hasError(){
+          return true;
+    }
+<div [className]="hasError() ? 'red' : 'size20'"> conditonal operator </div>
+
+
+  iii:)Class binding with Class
+
+<div [class.<className>]="condition"></div>
+
+condition=true;
+
+<div [class.red]="condition" [class.fontSze]="condition">Test</div>
+
+
+iv)using the NgClass directive
+->The Angular ngClass Directive is an Angular Attribute Directive.
+
+     <element [ngClass]="expression">...</element>
+     Here expression is String,Array,Object..etc
+
+#a :NgClass with a String
+    <element [ngClass]="'cssClass1 cssClass2'">...</element>
+
+<element [ngClass]="'red fontSze'">...</element>
+
+#b :  NgClass with Array
+       <element [ngClass]="['cssClass1', 'cssClass2']">...</element>
+
+<div [ngClass]="['red','fontSze']">Red Text with Size 20px </div>
+
+#c  :  NgClass with Object
+      <element [ngClass]="{'cssClass1': true, 'cssClass2': true}">...</element>
+
+ <div [ngClass]="{'red':true,'size20':true}">Red Text with Size 20px</div>  
+
+
+# another Way of defining  
+<div ngClass='red fontSze'>Red Text with Size 20px </div> 
+
+
+====#05. Style binding []===========================
+--->a)By Using HTML Style Attribute
+       <div style="color:red;font-size:25px;">Style Binding By HTML Style Attribute<div>
+
+-->Syntax b): [style.<property>]="'expression'" ;//Observe Here single quotes within double quotes
+            [style.color]="'red'" ;
+
+      Another -way is :   bind-style.color="'green'"
+                          <div bind-style.color="'green'">Style Binding By bind-style.property <div>
+
+       required =true;
+
+--> Conditionally : [style.color]=" required ? 'red':'green'"           
+     c)For Mutiple properties in style ,we can use ngStyle
+    
+---> [ngStyle]="{'color':'blue','font-size': '24px', 'font-weight': 'bold'}"
+
+====#06. Attribute binding [attr.<attributeName>]===========================
+
+-->Syntax   : [attr.<attributeName>]="expression"
+             <tr><td [attr.attribute-name]="Attribute Value"></td></tr>
+
+====#07. Event binding ()===========================
+--> Event binding is one way from view to component.
+-->Syntax  : (EventName)=""   //(target-event)="TemplateStatement"
+             <div (click)="onClick()"> Click Me</div>
+
+-->Another Syntax : on-click="clickMe()"
+<button on-click="clickMe()">Click Me</button>
+
+  #$event Payload
+
+  -->DOM Events carries the event payload. I.e the information about the event.
+     We can access the event payload by using $event as an argument to the handler function.
+
+  <input (input)="handleInput($event)">
+
+  value=""
+handleInput(event) {
+  this.value = (event.target as HTMLInputElement).value;
+}
+
+--->Template Reference variable :Syntax :#<name> 
+                                          #el
+  <input #el (input)="handleInput1(el.value)"> 
+
+ [=======(ii). Two way binding=================] 
+
+ ====#08. Two Way databinding ngModal   [(ngModel)] (In One component only) ===========================
+-->PropertyBinding     :[]
+-->EventBinding        :()
+-->Two Way DataBinding   =PropertyBinding + EventBinding
+                         = [] +()
+                         =[()]
+
+ -->Syntax               :[(ngModel)]                     
+
+-->The ngModel directive is not part of the Angular Core library. It is part of the FormsModule library. 
+   You need to import the FormsModule package into your Angular module.
+
+
+=========#09.Component Interaction :: (Two Way databinding more than one Component By Using @Input ,@Output,EventEmitter)=============
+ 
+ #From Parent to child component (P-C) @Input
+---->@Input() fromParent="";        [Syntax]
+
+  ex : In Parent 
+        parentMsg = 'This is a parent Message';
+  <app-child-component [fromParent]="parentMsg"></app-child-component> 
+        In Child
+        @Input('fromParent') fromData="";
+        <div> {{fromData}}</div>
+
+#From child component to Parent (C-P) @Output
+ //In Child
+----> @Output() childInfoToParent:EventEmitter =new EventEmitter(); //Declare the property in child component
+
+ <button (click)="fireEvent()">SendChildInfoToParent</button>
+
+//Raise the event to send the data back to parent
+fireEvent() {
+  this.childInfoToParent.emit("From Child to Parent ");
+}
+//In Parent
+childMsg="";
+
+<app-child-component  (childInfoToParent)="childMsg=$event"></app-child-component> 
+
+
+=====#10.Angular Directives and its Types===================================
+-->The Angular directive helps us to manipulate the DOM.
+-->You can change the appearance, behavior, or layout of a DOM element using the Directives. 
+
+There are three kinds of directives in Angular:
+
+    1)Component Directive  //Component we are already known
+    2)Structural directives
+    3)Attribute directives
+
+
+   3)Attribute directives
+   -->An Attribute or style/class directive  can change the appearance or behavior of an element.
+      #Commonly used Attribute directives
+       They are ::
+                  i)ngStyle [eq =Style attribute in HTML]
+                  ii)ngClass [eq =class attribute in HTML]
+                  iii)ngModel [For two data Binding]
+
+  2)Structural Directives
+   -->Structural directives can change the DOM layout by adding and removing DOM elements
+   --> All structural Directives are preceded by Asterix (*) symbol
+       #Commonly used structural directives
+         i)ngIf      [Conditionally render]
+         ii)ngSwitch [Conditionally render]
+         iii)ngFor   [iterable list (Collection)]
+
+
+  i)ngIf 
+  -->Syntax :   *ngIf="expression"  [expression is either true or false]
+  -->The ngIf Directives is used to add or remove HTML elements based on an expression. 
+  -->The expression must return a boolean value.
+
+   ex :
+      <div *ngIf="condition1;then thenBlock else elseBlock1"></div>
+     <ng-template #thenBlock>
+                 <div>Welcome to thenBlock</div>
+     </ng-template>
+     <ng-template #elseBlock1>
+              <div>Welcome to elseBlock1</div>
+      </ng-template>
+
+
+  ii)ngSwitch 
+  -->Syntax :   
+            <container_element [ngSwitch]="switch_expression">
+                   <inner_element *ngSwitchCase="match_expresson_1">...</inner_element>
+                   <inner_element *ngSwitchCase="match_expresson_2">...</inner_element>
+                   <inner_element *ngSwitchCase="match_expresson_3">...</inner_element>
+                   <inner_element *ngSwitchDefault>...</element>
+          </container_element>
+  -->The ngIf Directives is used to add or remove HTML elements based on an expression. 
+  -->The expression must return a boolean value.
+
+
+iii)ngFor
+-->Syntax :
+      <html-element ngFor="let <item> of <items>;”> 
+                <html-Template></html-Template>
+      </html-element 
+--> The syntax starts with *ngFor.
+-->items like Collection,Array
+-->It contains local variable like index,odd,even,first,last,
+
+
+=====#11.Pipes===================================
+-->Angular Pipes takes data as input and formats or transform the data 
+    to display in the template.
+--->We are also going to look at the few of the angular built-in pipes like 
+         string manipulation,
+         number pipe/decimal pipe, 
+         slice pipe,
+         percent pipe,
+         currency pipe,
+         date pipe,
+         JsonPipe.
+
+ #string manipulation
+          [syntax] :  {{ value_expression | stringManipulationPipe }}
+   i)uppercase
+   ii)lowercase
+   iii)titlecase 
+
+ #NumberPipe
+       [syntax] :  number_expression | number[:digitInfo]
+Where
+   number_expression is the number you want to format
+   number is the name of the pipe
+   digitInfo is a string which has the following format
+        {minIntegerDigits}.{minFractionDigits}-{maxFractionDigits} 
+minIntegerDigits is the minimum number of integer digits to use. Defaults to 1.
+minFractionDigits is the minimum number of digits after fraction. Defaults to 0.
+maxFractionDigits is the maximum number of digits after fraction. Defaults to 3.
+
+ #slice pipe
+  [syntax ] : array_or_string_expression | slice:start[:end]
+
+ ---> If neg val  then the index is counted from end of the string/array. 
+
+ #percentPipe
+  [syntax ] : number_expression | percent[:digitInfo]
+
+Where
+-->number_expression is the number you want to format
+-->percent is the name of the pipe
+-->digitInfo is a string which has the following format. 
+    It is similar to used in decimal pipe
+
+ #currencyPipe
+   [syntax ] : number_expression | currency[:currencyCode[:symbolDisplay[:digitInfo]]]
+
+   Where
+--->number_expression currency to format a number as currency.
+--->Currency is the name of the pipe
+--->currencyCode is the ISO 4217 currency code, such as USD for the US dollar and EUR for the euro.
+-->symbolDisplay is a boolean indicating whether to use the currency symbol or code. 
+    Use true to display symbol and false to use code
+-->digitInfo is similar to the one used in decimal pipe
+  
+#datePipe     
+ [syntax ] : {{ value_expression | date [ : format [ : timezone [ : locale ] ] ] }}
+
+Parameters
+format 	  string 	  Optional. Default is 'mediumDate'.
+timezone 	string 	  Optional. Default is undefined.
+locale  	string 	  Optional. Default is undefined.
+    
+#JsonPipe
+[Syntax ] :      {{ value_expression | json }}
+
+    
+
+
+
+
+
+
+

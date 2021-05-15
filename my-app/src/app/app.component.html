@@ -1,0 +1,55 @@
+<h1 style="text-align: center;color: rebeccapurple;">Hello World.....!</h1>
+
+<!--#01 : Ways of adding selector in HTML  template-->
+
+<!--Ways to add selector in HTML Template-->
+<app-student></app-student> <!-- #01 :If we specify like 'app-student' as Selector in @component decorator of StudentComponet -->
+
+<!--<div class="app-student"> --> <!-- #02 :If we specify like '.app-student'(class) as Selector in @component decorator of StudentComponet -->
+
+<!--<div app-student></div> -->  <!-- #03 :If we specify like '[app-student]' as Selector in @component decorator of StudentComponet -->
+
+<hr>
+<h2>Interpolation</h2>
+
+<!--#02 :Interpolation :One way data binding (From Component to Template)-->
+<app-test></app-test>
+
+<hr>
+<h2>Propery Binding</h2> <!--By Using square Brackets [] ,like  [binding-target]=”binding-source”-->
+
+<app-properybinding></app-properybinding>
+
+<hr>
+<h2>Class Binding</h2>    <!--By Using square Brackets [] like class,[className],bind-className,[class.<className>],[ngClass]-->
+<app-classbinding></app-classbinding>
+
+<hr>
+<h2>Style Binding and Attribute Binding</h2>      <!--By Using square Brackets [] like style,[style.<property>],[ngStyle]-->
+<app-stylebinding></app-stylebinding>
+
+
+<hr>
+<h2>Event Binding and Template Ref:variable # </h2>    <!--By Using ()-->
+<app-eventbinding></app-eventbinding>
+
+
+<hr>
+<h2>Two Way DataBinding </h2>   <!--By Using [()]-->
+<app-twowaybinding></app-twowaybinding>
+
+
+<hr>
+<h2>Component Interaction With two components  (Two Way DataBinding Using @Input ,@Output,EventEmitter)</h2>
+<app-child-component  (childInfoToParent)="childMsg=$event" [fromParent]="parentMsg"></app-child-component>     <!--@Input, @Output & Eventemitter-->
+<h3 style="text-align: center;">{{childMsg}}</h3>
+
+
+<hr>
+<h2>Structural Directives [ngIf,ngSwitch,ngFor]</h2>
+<app-structural-directives></app-structural-directives>
+
+
+<hr>
+<h2>Pipe [Used to transform data into required format]</h2>
+<app-pipe></app-pipe>

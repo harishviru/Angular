@@ -1,0 +1,312 @@
+ ====================================SERVICES=====================================
+
+ ==#12.Services==
+ 
+--->To Create service
+--->ng generate service hero
+
+-->A class with a specific purpose
+   -->Share data
+   -->Implementation application logic
+   -->External Interaction
+
+--->Naming convention    : <service-name>.service.ts 
+
+#Dependency Injection (DI):
+ -->Code Without DI -drawbacks
+ -->DI as a design pattern
+ -->DI as a framework
+
+
+#Code Without DI
+
+  class Engine{
+     constructor(){}
+  } 
+  class Tires{
+     constructor(){}
+  }
+
+  class car{
+     engine;
+     tires;
+      constructor(){
+        this.engine=new Engine();
+        this.tires = new Tires()
+      }
+  }
+
+--->In car class construts engine and tires object.
+--->Let assume Engine and Tires class are added constructor with Parameters,then 
+    car class will be broken.
+
+ class Engine{
+     constructor(type){}
+  } 
+  class Tires{
+     constructor(newParamenter){}
+  }
+
+--->Then always we have change in car class constructor whenever engine or tires
+  class constructor changes ,it became tedious
+
+
+#DI as a design pattern
+-->DI is a coding pattern in which a class receives its dependencies from 
+   external source rather than creating them itself.
+
+ class Engine{
+     constructor(){}
+  } 
+  class Tires{
+     constructor(){}
+  }
+
+  class car{
+     engine;
+     tires;
+      constructor(engine,tires){
+        this.engine=engine;
+        this.tires = tires;
+      }
+  }
+
+
+-->To create car something like these....
+  #01.
+   var myEngine    = new Engine();
+   var myTires     = new Tires();
+   var myCar       = new Car(myEngine,myCar);
+
+  #02.
+   var myEngine    = new Engine(parameter);
+   var myTires     = new Tires();
+   var myCar       = new Car(myEngine,myCar);
+
+  #03.
+   var myEngine    = new Engine(parameter);
+   var myTires     = new Tires(parameter);
+   var myCar       = new Car(myEngine,myCar);
+
+            (or)
+  #01          
+   var oldEngine    = new Engine(parameter);
+   var oldTires     = new Tires(parameter);
+   var oldCar       = new Car(oldEngine,oldTires);   
+
+   #02
+   var newEngine    = new Engine(parameter);
+   var newTires     = new Tires(parameter);
+   var newCar       = new Car(newEngine,newTires);           
+
+Note :  Upto now no problem.
+
+--->whenever dependencies increases,it becomes tedious to developer,like these
+   #01
+   var myEngine    = new Engine();
+   var myTires     = new Tires();
+   var depA        = new DependencyA();
+   var depB        = new DependencyB();
+   var depZ        = new Dependencyz();
+   var myCar       = new Car(myEngine,myCar,depA,depB,depZ);
+ 
+ #02
+   var myEngine    = new Engine();
+   var myTires     = new Tires();
+   var depA        = new DependencyA();
+   var depB        = new DependencyB();
+   var depAB       = new DependencyAB();
+   var depZ        = new Dependencyz(depAB);
+   var myCar       = new Car(myEngine,myCar,depA,depB,depZ);
+
+--->These is the reason ,DI as a framework comes into picture.
+
+#DI as a framework
+
+  Injector                              Services
+  ----------------------------------------------
+  Engine                               ServiceA
+  Tires                                ServiceB
+  DepA                                 ServiceC
+  DepB                                 ServiceD
+   .                                      .
+   .                                      .
+   .                                      .
+   .                                      .
+   DepZ                                 ServiceZ
+-------------------------------------------------
+   Car 
+
+
+ --->1.  Define the EmployeeServices class
+ --->2.  Register with Injector     like --->   providers: [EmployeeServiceService],
+ --->3. Declare as Dependency in EmpList and EmpDetails 
+                   
+                    [EmployeeServices]         (Injector)
+                   /                  \
+       [EmployeeList]                [EmpDetails]                  
+
+
+
+-->HTTP and Observables
+   
+
+                  --->[Database]
+                 |        |
+          Get    |        |    (Observable)
+                 |        |
+                  -[  EmployeeServices ]    
+     (Subscribe)  /         /           \  
+            [EmpList]  [EmpDetails]  ....[*Comp]  
+
+
+--->#Observables  :
+   -> A sequence of items that arrive asynchronously over time.
+   ->Http call      -single item
+   ->Single item    -HTTP Response
+
+
+  #HTTP,Observables
+  1. HTTP Get request from EmployeeServices
+  2. Receives the Observable and cast into an employee array
+  3. Subscribe to the Observable from EmpList and EmpDetails
+  4. Assign the employee array to a local variable
+
+Note :  (RxJS)
+-->Reactive Extensions for javascript
+-->External library to work with Observables
+
+
+#Steps to Use Services ::
+1. Import HttpClientModule in AppModule  ....like  imports: [... HttpClientModule]
+2. In UserService,  Import HttpClient     constructor(private _http:HttpClient) { }
+3. Receives the Observable and cast into an User array like
+   getUsers():Observable<User[]> {
+     return this._http.get<User[]>(this._URL);
+  }
+4. Subscribe to the Observable from UserList and UserDetails like 
+
+ users :User[]=[];
+
+  constructor(private _userService:UserService) { }
+  ngOnInit(): void {
+      this._userService.getUsers()
+        .subscribe(data=>this.users=data);
+  }
+
+5 . Assign the employee array to a local variable
+    users :User[]=[];
+
+    data=>this.users=data              // Observe in above steps
+
+
+  ##HTTP Methods
+   
+   1.HTTP GET
+
+  Syntax :
+         get(url: string, 
+      options: {
+          headers?: HttpHeaders | { [header: string]: string | string[]; };
+          params?: HttpParams | { [param: string]: string | string[]; };
+          observe?: "body|events|response|";
+          responseType: "arraybuffer|json|blob|text";
+          reportProgress?: boolean; 
+          withCredentials?: boolean;}
+     ): Observable<>
+
+  Ex :
+    baseURL: string = "https://api.github.com/";
+ 
+    constructor(private http: HttpClient) {}
+ 
+  getRepos(userName: string): Observable<any> {
+     return this.http.get(this.baseURL + 'users/' + userName + '/repos')
+  }
+
+
+  2.HTTP POST
+
+    post(url: string, 
+     body: any, 
+     options: { 
+        headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+        observe?: "body|events|response|"; 
+        params?: HttpParams | { [param: string]: string | string[]; }; 
+        reportProgress?: boolean; 
+        responseType: "arraybuffer|json|blob|text"; 
+        withCredentials?: boolean; 
+     }
+): Observable
+
+ Ex :
+
+   addPerson(person:Person): Observable<any> {
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify(person);
+    this.http.post(this.baseURL + 'people', body,{'headers':headers , observe: 'response'})
+      .subscribe(
+       response=> {
+            console.log("POST completed sucessfully. The response received "+response);
+        },
+        error => {
+            console.log("Post failed with the errors");
+        },
+        () => {
+            console.log("Post Completed");
+        }
+}
+
+
+
+baseURL: string = "http://localhost:3000/";
+  
+  addPerson(person:Person): Observable<any> {
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify(person);
+    console.log(body)
+    return this.http.post(this.baseURL + 'people', body,{'headers':headers})
+  }
+
+
+ 3.HTTP PUT 
+        
+put(url: string, 
+     body: any, 
+     options: { 
+        headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+        observe?: "body|events|response|"; 
+        params?: HttpParams | { [param: string]: string | string[]; }; 
+        reportProgress?: boolean; 
+        responseType: "arraybuffer|json|blob|text"; 
+        withCredentials?: boolean; 
+     }
+): Observable
+ 
+4.HTTP PATCH 
+
+   patch(url: string, 
+     body: any, 
+     options: { 
+        headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+        observe?: "body|events|response|"; 
+        params?: HttpParams | { [param: string]: string | string[]; }; 
+        reportProgress?: boolean; 
+        responseType: "arraybuffer|json|blob|text"; 
+        withCredentials?: boolean; 
+     }
+): Observable
+
+
+ 5.HTTP DELETE
+
+ delete(url: string, 
+      options: {
+          headers?: HttpHeaders | { [header: string]: string | string[]; };
+          params?: HttpParams | { [param: string]: string | string[]; };
+          observe?: "body|events|response|";
+          responseType: "arraybuffer|json|blob|text";
+          reportProgress?: boolean; 
+          withCredentials?: boolean;}
+     ): Observable<>
+
