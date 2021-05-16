@@ -1,0 +1,237 @@
+
+                       Angular Forms
+                       =============
+The Angular forms are used to collect the data from the user.
+ 
+  [ Template ] --->[ Class ] ----->[ Services ]---->[ Server ]
+  collect data     Bind data        Send data
+
+#Some things forms are expected to do
+  ->Data binding
+  ->Change tracking
+  ->Validation
+  ->Visual feedback
+  ->Error Messages
+  ->Form submission
+
+ # Two Approaches in forms::
+   ->1.Template Driven Forms 
+        ->Heavy on the component template
+
+   ->2. Reactive Forms
+        ->Heavy on the component class
+
+
+
+#01.Template Driven Forms (TDF)  ::[ ngForm ,ngModel,ngModelGroup ,ngSubmit]
+
+-->Easy to use and similar to Angular Js forms
+-->Two way data binding with ngModel
+-->Automatically tracks 
+                        i)  forms
+                        ii) form elements state
+                        iii)form elements validity
+-->Unit testing is a challenge
+-->Readability decreases with complex forms and validation.
+-->Suitable for simple scenarios
+
+
+Steps   :: (Basic Form)
+=======   ==============
+
+-->Import FormsModule in AppModule
+  import {FormsModule} from '@angular/forms'
+
+-->Add #userForm="ngForm" to form by Using TemplateRef variable
+-->By Using ngModel directive on form element ,Angular track state
+-->We can also ngModelGroup from group elements like ngModelGroup="address".
+-->For submit form ,we can use ngSubmit like (ngSubmit)="onSubmit(userForm)";
+-->If You want to use Template Driven Form ,we must have import in FormsModule in AppModule
+
+Note : 
+  If ngModel is used within a form tag, either the name attribute
+   must be set or the form control must be defined as 'standalone'
+
+ ex :
+       <input type="text" class="form-control" ngModel name="name" />  
+
+# Form with databinding 
+=======================
+
+--->Component to view By Using property binding (one way)
+           <input type="text" class="form-control" [ngModel]="courseModel.name" name="name" />
+--->Component to view and view to component by using [(ngModel)] (Two databinding)             
+          <input type="text" class="form-control" [(ngModel)]="courseModel.name" name="name" />
+
+
+#Form with tracking state and validity [Displaying Error Messages]
+=================================================================
+
+
+   State                                    Class if true             Class if false
+
+   The control has been visited              ng-touched                ng-untouched
+
+   The control value has been changed        ng-dirty                  ng-pristine
+
+   The control's value is valid             ng-valid                   ng-invalid
+
+
+ -->The angular provides associate properties on ngModel directive
+    
+    ngModel properties ::
+
+    class                              property
+    ng-untouched                        untouched
+    ng-touched                          touched
+    ng-pristine                         pristine
+    ng-dirty                            dirty
+    ng-valid                            valid
+    ng-invalid                          invalid
+
+-->Below we used above properties
+
+<div class="form-group col-4">
+              <label>Name</label>
+              <input type="text" class="form-control" #name="ngModel" [class.is-invalid]="name.invalid && name.touched" required   [(ngModel)]="courseModel.name" name="name" />
+               <small class="text text-danger" [class.d-none]="name.valid || name.untouched">Name is required           
+            </small>
+</div>
+
+<div class="form-group col-4">
+           <label>Email</label>
+           <input type="email" class="form-control" #email="ngModel" 
+            [(ngModel)]="courseModel.email" name="email"
+            pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+            required/>
+        <div *ngIf="email.errors && (email.invalid || email.touched)">
+                <small class="text text-danger" *ngIf="email.errors.required">Email  is required</small>
+                <small class="text text-danger" *ngIf="email.errors.pattern">Email is not valid</small>
+          </div>
+</div>
+
+
+#Express server
+     
+--->npm init --yes
+--->npm install --save express body-parser cors
+
+
+#Summary TDF [Template Driven Form]::
+=====================================
+
+-->ngForm
+-->ngModel
+-->#<refVal>  //TemplateRef
+-->ngModelGroup
+-->ngSubmit
+//For element
+  -->ng-untouched
+  -->ng-touched
+  -->ng-valid
+  -->ng-invalid
+  -->ng-dirty
+  -->ng-pristine
+
+
+2. Reactive Forms /Modal Driven Form
+
+-->Code and the logic resides in the component class
+-->No two way binding
+-->Well suited for complex scenarios
+-->Dynamic form fields
+-->Custom validation
+-->Unit test is easy .
+
+
+These are build blocks of Reactive form
+----------------------------------------
+-->FormGroup
+-->FormControl
+-->FormArray
+-->FormBuilder
+
+If You want to use ReactiveFormsModule ,we must have import in ReactiveFormsModule in AppModule
+
+#In Form [FormGroup,FormControl]
+
+.[formGroup]="registrationForm"
+.formControlName="userName"
+
+<form [formGroup]="registrationForm">
+      <div class="form-group">
+              <label>UserName</label>
+              <input type="text" class="form-control"  formControlName="userName" />
+         </div>
+</form>
+
+
+registrationForm = new FormGroup({
+    ................,
+    address      :new FormGroup({
+      city       :new FormControl(''),
+      state      :new FormControl(''),
+      postalCode :new FormControl('')
+    })
+ })
+
+--->By Using formGroupName=""
+ <div formGroupName="address">
+                          <label>Address</label>
+                         <div class="form-group ">
+                             <label>City</label>
+                             <input type="text" class="form-control" name="city"  formControlName="city"/>
+                          </div>
+
+                          <div class="form-group ">
+                               <label>State</label>
+                             <input type="text" class="form-control" name="state" formControlName="state"/>
+                         </div>
+
+                        <div class="form-group">
+                             <label>Postal Code</label>
+                            <input type="text" class="form-control" name="postalCode" formControlName="postalCode" />
+                        </div>
+                 </div>
+
+
+#In Form [FormBuilder]
+
+-->Below code equal to above code ,Here are not required create FormGroup,FormControl unnecessary
+
+  constructor(private formbd:FormBuilder) { }
+
+  registrationForm=this.formbd.group({
+    userName:['Harish'],
+    password:[''],
+    confirmPassword:[''],
+    address:this.formbd.group({
+       city:[''],
+       state:[''],
+       postalCode:['']
+    })
+  })
+
+#FormArray
+
+<div class="form-group">
+            <label>Phone Numbers</label>
+            <button type="button" class="btn btn-secondary btn-sm m-2" (click)="addAlternatePhoneNos()">Add Phone Numbers</button>
+            <input type="text" [class.is-invalid]="phoneNo.invalid && phoneNo.touched" formControlName="phoneNo" class="form-control">
+            <small class="text-danger" [class.d-none]="phoneNo.valid || phoneNo.untouched">Phone Number is required</small>
+            <div formArrayName="alternatePhoneNos" *ngFor="let phoneNo of alternatePhoneNos.controls; let i=index">
+              <input type="text" class="form-control my-1" [formControlName]="i">
+            </div> 
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
